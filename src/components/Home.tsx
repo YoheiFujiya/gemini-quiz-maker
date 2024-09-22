@@ -6,7 +6,6 @@ import {
   Container,
   Grid2 as Grid,
   Modal,
-  Stack,
   TextField,
   Typography,
 } from "@mui/material";
