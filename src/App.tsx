@@ -10,7 +10,7 @@ import "./App.css";
 const App: React.FC = () => {
   return (
     <>
-      <Router basename="/gemini-quiz-maker">
+      <Router basename={import.meta.env.BASE_URL}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/quiz" element={<Quiz />} />
