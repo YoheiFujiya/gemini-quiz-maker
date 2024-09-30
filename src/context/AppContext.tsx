@@ -1,16 +1,19 @@
-import React, { createContext, useState, ReactNode } from "react";
+import React, { createContext, useState, ReactNode, useContext } from "react";
 
 interface AppContextProps {
   genre: string;
   setGenre: (genre: string) => void;
 }
 
-export const AppContext = createContext<AppContextProps | undefined>(undefined);
+export const AppContext = createContext<AppContextProps>({
+  genre: "",
+  setGenre: () => {},
+});
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [genre, setGenre] = useState<string>("");
+  const [genre, setGenre] = useState<string>("ランダム");
 
   return (
     <AppContext.Provider value={{ genre, setGenre }}>
@@ -18,3 +21,5 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     </AppContext.Provider>
   );
 };
+
+export const useAppContext = () => useContext(AppContext);

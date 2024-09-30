@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
+  Alert,
   Box,
   Button,
+  ButtonGroup,
   Container,
   Grid2 as Grid,
   Modal,
+  Snackbar,
   TextField,
   Typography,
 } from "@mui/material";
@@ -18,16 +21,28 @@ import {
 import reactLogo from "../assets/react.svg";
 import viteLogo from "/vite.svg";
 import geminiLogo from "../assets/gemini.png";
+import { useAppContext } from "../context/AppContext";
 
 const Home: React.FC = () => {
-  const [genre, setGenre] = useState<string>("ランダム");
+  const { genre, setGenre } = useAppContext();
   const [open, setOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  const genreSuggestions = ["スポーツ", "映画", "音楽", "歴史"];
 
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setSnackbarOpen(true);
+  };
   const handleGenreChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setGenre(e.target.value);
   };
+  const handleSuggestionClick = (suggestion: string) => {
+    setGenre(suggestion);
+  };
+  const handleSnackbarClose = () => setSnackbarOpen(false);
+  const handleModalClose = () => setOpen(false);
 
   return (
     <Container className="home-container">
@@ -90,7 +105,7 @@ const Home: React.FC = () => {
 
       <Modal
         open={open}
-        onClose={handleClose}
+        onClose={handleModalClose}
         aria-labelledby="genre-modal-title"
       >
         <Box
@@ -106,29 +121,48 @@ const Home: React.FC = () => {
             p: 4,
           }}
         >
-          <Typography
-            id="genre-modal-title"
-            variant="h5"
-            component="h2"
-            color="black"
-          >
-            クイズのジャンルを指定できます。 <br />
-            入力フォームに単語を入力してください。
+          <Typography id="genre-modal-title" variant="h5" color="black">
+            クイズのジャンルを指定できます <br />
+          </Typography>
+          <Typography id="genre-modal-title" variant="body1" color="black">
+            入力フォームに単語を入力して、決定ボタンを押してください。
           </Typography>
           <TextField
             id="genre"
-            label="ジャンル"
-            variant="filled"
+            label="ジャンルを入力してください"
+            variant="outlined"
             fullWidth
             sx={{ mt: 2 }}
             value={genre}
+            slotProps={{ htmlInput: { maxLength: 30 } }}
             onChange={handleGenreChange}
           />
-          <Button onClick={handleClose} sx={{ mt: 2 }}>
+          <ButtonGroup size="small" fullWidth>
+            {genreSuggestions.map((suggestion) => (
+              <Button
+                key={suggestion}
+                onClick={() => handleSuggestionClick(suggestion)}
+                sx={{ mt: 0.5 }}
+              >
+                {suggestion}
+              </Button>
+            ))}
+          </ButtonGroup>
+          <Button onClick={handleClose} sx={{ mt: 4 }}>
             決定
           </Button>
         </Box>
       </Modal>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={2000}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        onClose={handleSnackbarClose}
+      >
+        <Alert severity="success" onClose={handleSnackbarClose}>
+          クイズのジャンルが「{genre}」に設定されました。
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
