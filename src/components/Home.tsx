@@ -27,19 +27,21 @@ const Home: React.FC = () => {
   const { genre, setGenre } = useAppContext();
   const [open, setOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [tmpGenre, setTempGenre] = useState<string>(genre);
 
   const genreSuggestions = ["スポーツ", "映画", "音楽", "歴史"];
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
+    setGenre(tmpGenre);
     setOpen(false);
     setSnackbarOpen(true);
   };
   const handleGenreChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setGenre(e.target.value);
+    setTempGenre(e.target.value);
   };
   const handleSuggestionClick = (suggestion: string) => {
-    setGenre(suggestion);
+    setTempGenre(suggestion);
   };
   const handleSnackbarClose = () => setSnackbarOpen(false);
   const handleModalClose = () => setOpen(false);
@@ -133,7 +135,7 @@ const Home: React.FC = () => {
             variant="outlined"
             fullWidth
             sx={{ mt: 2 }}
-            value={genre}
+            value={tmpGenre}
             slotProps={{ htmlInput: { maxLength: 30 } }}
             onChange={handleGenreChange}
           />
@@ -148,9 +150,18 @@ const Home: React.FC = () => {
               </Button>
             ))}
           </ButtonGroup>
-          <Button onClick={handleClose} sx={{ mt: 4 }}>
-            決定
-          </Button>
+          <Grid container spacing={2}>
+            <Grid size={6}>
+              <Button onClick={handleModalClose} sx={{ mt: 4 }}>
+                キャンセル
+              </Button>
+            </Grid>
+            <Grid size={6}>
+              <Button onClick={handleClose} sx={{ mt: 4 }}>
+                決定
+              </Button>
+            </Grid>
+          </Grid>
         </Box>
       </Modal>
       <Snackbar
